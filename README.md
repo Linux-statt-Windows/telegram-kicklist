@@ -12,7 +12,7 @@ Features
 Install
 -------
 
-- **Requirments:**
+- **Requierments:**
   - telegram-cli
   - python3
 - establish telegram-cli to work *Hint: You need to be the administrator of the group in order to remove any user!*
