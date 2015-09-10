@@ -64,6 +64,12 @@ class kicker(Thread):
                             self.__db = db.db_handler(DATABASE)
                             self.__db.add_user_id(member['id'], member['username'])
                             self.__db.close_database()
+                if 'print_name' in member:
+                    if member['print_name'] in banned_usernames:
+                        if member['id'] not in banned_ids:
+                            self.__db = db.db_handler(DATABASE)
+                            self.__db.add_user_id(member['id'], member['username'])
+                            self.__db.close_database()
                 if member['id'] in banned_ids:
                     cmd = ['telegram-cli','-b','-W','-D','--json','-e chat_del_user ' + GROUP_NAME + ' ' + member['print_name']]
                     s = subprocess.Popen(cmd, stdout=subprocess.PIPE)
