@@ -36,7 +36,7 @@ Todo
 ----
 
 - Stability-improvements(some kind of unicode problems seem to be there)
-- Get rid of to much regex in the remove_shit() function to remove strange caracters from the telegram-cli output
+- Get rid of too much regex in the remove_shit() function to remove strange characters from the telegram-cli output
 
 
 License
