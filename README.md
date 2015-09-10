@@ -35,7 +35,6 @@ Usage
 Todo
 ----
 
-- Ban by print_name
 - Stability-improvements(some kind of unicode problems seem to be there)
 - Get rid of to much regex in the remove_shit() function to remove strange caracters from the telegram-cli output
 
