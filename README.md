@@ -26,9 +26,9 @@ Usage
 
 - Start with `./autokick.py` in cloned directory
 - Use the db.py to edit your database
-  - `add <username>` adds an username to the database
-  - `del <username>` deletes an entry to the given username
-  - `show` prints out all banned usernames and ids
+  - `add <username/print_name>` adds an username OR print_name to the database
+  - `del <username/print_name>` deletes an entry to the given username OR print_name(please look, which of them you've added to the database earlier!)
+  - `show` prints out all banned usernames or print_names and ids
   - `exit` exit the database-tool
 
 
