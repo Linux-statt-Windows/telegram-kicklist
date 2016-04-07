@@ -1,0 +1,116 @@
+#!/bin/env python3
+#
+# Telegram Auto Kicklist
+#
+# A small tool, that generates a list with kicked/banned users, their id
+# and reason from a telegram group for exactly that purpose.
+#
+# Messages must look like:
+#
+#    "@username - reason"
+#
+# This tool automatically grabs the user id behind the username, so username-
+# changes will be detected.
+#
+# © 2016 Daniel Jankowski
+
+
+import os
+import sqlite3
+
+from utils import *
+
+
+DATABASE = '/home/neo/Projekte/Python/telegram-kicklist/users.db'
+
+
+class db_handler(object):
+
+    def __init__(self, database):
+        super().__init__()
+        self.__database = database
+
+        # try to open the database
+        self.__con = None
+        self.__cur = None
+        self.open_database(database)
+
+    def open_database(self, database):
+        # check for error on the database connection
+        try:
+            self.__con = sqlite3.connect(database)
+            self.__cur = self.__con.cursor()
+        except Exception as e:
+            log_err('Error connecting to the database')
+            print(e)
+
+            # reset cursor and connection on failure
+            self.__cur = None
+            self.__con = None
+
+    def close_database(self):
+        self.__con.commit()
+        self.__con.close()
+
+    def create_table(self):
+        self.__cur.execute('CREATE TABLE IF NOT EXISTS banned_user(username TEXT, id INT, reason TEXT)')
+
+    def add_user(self, username, reason):
+        self.__cur.execute('INSERT INTO banned_user VALUES(\'' + username + '\', 0, ' + reason + ')')
+
+    def add_user_id(self, user_id, username):
+        self.__cur.execute('UPDATE banned_user SET id=' + str(user_id) + ' WHERE username=\'' + username + '\'')
+
+    def del_user(self, username):
+        self.__cur.execute('DELETE FROM banned_user WHERE username LIKE \'' + username + '\'')
+        self.__cur.execute('DELETE FROM banned_user WHERE id LIKE \'' + username + '\'')
+
+    def check_username(self, username):
+        self.__cur.execute('SELECT username FROM banned_user WHERE username LIKE \'' + username + '\'')
+        data = self.__cur.fetchall()
+
+        # check if username is in databse
+        if username in data:
+            return True
+        return False
+
+    def get_banned_usernames(self):
+        self.__cur.execute('SELECT * FROM banned_user')
+        data = self.__cur.fetchall()
+        return data
+
+
+# edit the database manually
+def main():
+    # check for database
+    if not os.file.exists(DATABASE):
+        log_err('cannot open the database!')
+        return False
+
+    log('Edit the database')
+
+    # start input loop
+    inp = ''
+    while inp != "exit":
+        inp = input('> ')
+        if inp.startswith('add'): # add entry to database
+            username = inp.lstrip('add ')
+            db = db_handler(DATABASE)
+            db.add_user(username)
+            db.close_database()
+            log('Added username')
+        elif inp.startswith('del'): # delete entry
+            username = inp.lstrip('del ')
+            db = db_handler(DATABASE)
+            db.del_user(username)
+            db.close_database()
+            log('Deleted User')
+        elif inp.startswith('show'): # show all entries
+            db = db_handler(DATABASE)
+            liste = db.get_banned_usernames()
+            log(liste)
+            db.close_database()
+    return
+
+if __name__ == '__main__':
+    main()
